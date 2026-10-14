@@ -106,14 +106,18 @@ h1{font-size:30px;line-height:1.28;font-weight:800;letter-spacing:-.035em;margin
 .launch{margin-top:22px;border:1.5px solid var(--teal);border-radius:16px;background:var(--paper);padding:22px}
 .launch h2{font-size:22px;font-weight:800;letter-spacing:-.03em;margin:6px 0 2px}
 .launch .sub{font-size:13.5px;color:var(--ink-3);margin:0 0 18px}
-.lgrid{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:center}
+.lgrid{display:grid;grid-template-columns:260px minmax(0,1fr);gap:28px;align-items:start}
 .lgrid > div{min-width:0}
+.olabel{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:10px;letter-spacing:-.01em}
+.olabel i{font-style:normal;font-size:11px;font-weight:800;color:#fff;background:var(--teal);border-radius:6px;padding:3px 7px;letter-spacing:.04em}
 .qrwrap{
-  background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;cursor:zoom-in;
+  background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;cursor:zoom-in;
   aspect-ratio:1/1;display:grid;place-items:center
 }
+.qrwrap:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 .qrwrap svg{width:100%;height:auto;display:block}
-.qcap{font-size:12px;color:var(--ink-3);text-align:center;margin-top:6px}
+.qcap{font-size:13px;color:var(--ink-2);text-align:center;margin:10px 0 0}
+.qbtn{margin-top:10px;padding:11px 16px;font-size:14px}
 .linkline{
   display:flex;align-items:center;gap:8px;margin-top:12px;background:var(--shell);border-radius:8px;padding:8px 8px 8px 12px
 }
@@ -128,10 +132,13 @@ h1{font-size:30px;line-height:1.28;font-weight:800;letter-spacing:-.035em;margin
 .launch .next{margin-top:16px}
 
 /* zoom overlay */
-.zoom{position:fixed;inset:0;background:rgba(16,22,20,.86);display:grid;place-items:center;padding:24px;z-index:20;cursor:zoom-out}
-.zoom .box{background:#fff;border-radius:16px;padding:18px;width:min(86vw,86vh,520px)}
+.zoom{position:fixed;inset:0;background:#fff;display:grid;place-items:center;padding:20px;z-index:20;cursor:zoom-out}
+.zoom .zin{width:min(92vw,78vh,560px);text-align:center}
+.zoom .zname{font-size:20px;font-weight:800;letter-spacing:-.03em;color:var(--ink);margin:0 0 4px}
+.zoom .zsub{font-size:13px;color:var(--ink-3);margin:0 0 14px}
 .zoom .box svg{width:100%;height:auto;display:block}
-.zoom p{color:#fff;font-size:14px;text-align:center;margin:14px 0 0}
+.zoom .zhint{color:var(--ink-2);font-size:14px;margin:14px 0 0}
+.zoom .zclose{margin-top:14px}
 
 /* status + footer */
 .status{margin-top:28px;font-size:12px;color:var(--ink-3);display:flex;align-items:center;gap:7px}
@@ -145,8 +152,9 @@ footer.foot{margin-top:14px;padding-top:18px;border-top:1px solid var(--line);fo
   .wrap{padding:20px 15px 52px}
   h1{font-size:25px}
   .card{padding:18px 16px}
-  .lgrid{grid-template-columns:1fr}
-  .qrwrap{max-width:240px;margin:0 auto}
+  .lgrid{grid-template-columns:1fr;gap:0}
+  .qrwrap{max-width:340px;margin:0 auto}
+  .linkside{border-top:1px solid var(--line);margin-top:20px;padding-top:18px}
   .launch{padding:18px 16px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
@@ -203,8 +211,14 @@ footer.foot{margin-top:14px;padding-top:18px;border-top:1px solid var(--line);fo
   <footer class="foot">PLAYTAG &nbsp;×&nbsp; REFLECTION SCIENCES</footer>
 </div>
 
-<div class="zoom" id="zoom" hidden>
-  <div><div class="box" id="zoomBox"></div><p>검사용 태블릿 카메라로 QR 코드를 비추세요 · 화면을 누르면 닫힙니다</p></div>
+<div class="zoom" id="zoom" hidden role="dialog" aria-label="QR 코드 전체 화면">
+  <div class="zin">
+    <p class="zname" id="zoomName"></p>
+    <p class="zsub" id="zoomSub"></p>
+    <div class="box" id="zoomBox"></div>
+    <p class="zhint">검사용 태블릿 카메라로 이 QR 코드를 비추세요</p>
+    <button class="btn ghost zclose" type="button">닫기</button>
+  </div>
 </div>
 
 <script>
@@ -217,7 +231,7 @@ var qrcode=function(){var t=function(t,r){var e=t,n=g[r],o=null,i=0,a=null,u=[],
    ① 새 index.html을 올릴 때는 APP_VERSION만 바꾸면 캐시된 브라우저도 자동으로 새로 불러옵니다.
    ② API_URL에 Apps Script 웹 앱 주소(…/exec)를 붙여넣으세요. 비워 두면 미리보기 모드.
    ════════════════════════════════════════════════════════════ */
-const APP_VERSION = "2026-10-14.3";
+const APP_VERSION = "2026-10-14.4";
 const API_URL = "https://script.google.com/macros/s/AKfycbz5clXni7N9MxUkGqEWjBLfAAjGLC-Mx1fMCyeESyJ2FAuhfRBi_zxkn6ZFTcu93_eCdQ/exec";
 
 (async () => {
@@ -355,7 +369,7 @@ async function start(i, btn){
 
 function qrSvg(text){
   qrcode.stringToBytes = qrcode.stringToBytesFuncs["UTF-8"];
-  const q = qrcode(0, "M"); q.addData(text); q.make();
+  const q = qrcode(0, "L"); q.addData(text); q.make();   // L: 칸이 굵어져 화면을 찍을 때 인식이 잘 됨
   return q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
 }
 
@@ -369,14 +383,17 @@ function renderLaunch(k, res){
       <h2>${esc(res.name || k.name)}</h2>
       <p class="sub">${esc([k.unsure ? "" : k.birth + "생", k.org, k.cls].filter(Boolean).join(" · "))}</p>
       <div class="lgrid">
-        <div>
-          <div class="qrwrap" id="qrBox" title="눌러서 크게 보기">${svg}</div>
-          <div class="qcap">QR을 누르면 크게 보입니다</div>
+        <div class="qrside">
+          <div class="olabel"><i>태블릿</i>QR 코드로 열기</div>
+          <div class="qrwrap" id="qrBox" role="button" tabindex="0" aria-label="QR 코드 전체 화면으로 보기">${svg}</div>
+          <p class="qcap">검사용 태블릿 카메라로 이 QR 코드를 비추면 검사가 열립니다.</p>
+          <button class="btn ghost block qbtn" type="button" id="qrFull">QR 전체 화면으로 보기</button>
         </div>
-        <div>
+        <div class="linkside">
+          <div class="olabel"><i>이 기기</i>바로 열기</div>
           ${res.link ? `
             <a class="btn big block" href="${esc(res.link)}" target="_blank" rel="noopener noreferrer">▶ 검사 열기 (새 창)</a>
-            <p class="lnote">버튼을 누르면 새 창에서 EFgo™ 검사가 열립니다. 검사용 태블릿 카메라로 QR 코드를 비춰도 됩니다.</p>
+            <p class="lnote">지금 보고 있는 기기에서 검사할 때 누르세요. 새 창에서 EFgo™ 검사가 열립니다.</p>
             <div class="linkline"><code>${esc(res.link)}</code><button type="button" id="copyBtn">복사</button></div>
           ` : `
             <div class="codebig">${esc(res.code)}</div>
@@ -392,7 +409,15 @@ function renderLaunch(k, res){
   $("results").hidden = true;
   L.hidden = false;
 
-  $("qrBox").addEventListener("click", () => { $("zoomBox").innerHTML = svg; $("zoom").hidden = false; });
+  const openZoom = () => {
+    $("zoomBox").innerHTML = svg;
+    $("zoomName").textContent = res.name || k.name;
+    $("zoomSub").textContent = [k.unsure ? "" : k.birth + "생", k.org, k.cls].filter(Boolean).join(" · ");
+    $("zoom").hidden = false;
+  };
+  $("qrBox").addEventListener("click", openZoom);
+  $("qrBox").addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openZoom(); } });
+  $("qrFull").addEventListener("click", openZoom);
   const cb = $("copyBtn");
   if (cb) cb.addEventListener("click", async () => {
     try { await navigator.clipboard.writeText(res.link); cb.textContent = "복사됨"; }
